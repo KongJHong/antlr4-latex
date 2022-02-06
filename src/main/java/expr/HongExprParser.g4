@@ -1,25 +1,21 @@
-parser grammar HongExprParser;
+grammar HongExprParser;
 
-options{
-    tokenVocab=HongExprLexer;
-}
-
-e: stat+;
-
-stat: expr NEWLINE              # calc
-    | PARAM KW_EQ expr NEWLINE  # assign
-    | NEWLINE                   # blank
-    ;
-
+e: expr;
 expr
-    : expr op=(MUL|DIV) expr    # priority
-    | expr op=(ADD|SUB) expr    # secondary
-    | latex                     # calcLatex
-    | NUMBER                    # number
-    | PARAM                     # param
-    | KW_LB expr KW_RB          # package
+    : expr op=(MUL|DIV) expr
+    | expr op=(ADD|SUB) expr
+    | KW_LB expr KW_RB
+    | PARAM
     ;
 
-latex
-    : KW_FRACTION KW_LBRACE expr KW_RBRACE KW_LBRACE expr KW_RBRACE  # fraction
-    ;
+MUL: '*';
+ADD: '+';
+DIV: '/';
+SUB: '-';
+KW_LB: '(';
+KW_RB: ')';
+NEWLINE: '\r'? '\n';
+WS: [ \t\n] -> skip;
+PARAM:ID DIGIT*;
+fragment ID: [a-zA-Z]+;
+fragment DIGIT: '0'..'9';
